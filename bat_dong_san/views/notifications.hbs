@@ -1,0 +1,133 @@
+{{#if notifications.length}}
+<div class="container my-4">
+    <div class="card">
+        <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-bell text-primary me-2"></i>Thông báo
+                </h5>
+                <button class="btn btn-sm btn-outline-primary" onclick="markAllAsRead()">
+                    <i class="fas fa-check-double me-1"></i>Đánh dấu tất cả đã đọc
+                </button>
+            </div>
+        </div>
+        <div class="list-group list-group-flush">
+            {{#each notifications}}
+            <div class="list-group-item notification-item {{#unless (lookup this.isRead ../user._id)}}unread{{/unless}}" 
+                 data-id="{{this._id}}" onclick="markAsRead('{{this._id}}', '/posts/{{this.postId._id}}')">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="notification-icon">
+                            <i class="fas fa-check-circle text-success"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">{{this.title}}</h6>
+                            <small class="text-muted">{{timeAgo this.createdAt}}</small>
+                        </div>
+                        <p class="mb-0 text-muted small">
+                            Tin đăng của bạn đã được duyệt
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+{{else}}
+<div class="container my-4">
+    <div class="text-center py-5">
+        <div class="mb-3">
+            <i class="fas fa-bell-slash fa-3x text-muted"></i>
+        </div>
+        <h4 class="text-muted">Không có thông báo nào</h4>
+        <p class="text-muted mb-0">Bạn sẽ nhận được thông báo khi tin đăng của bạn được duyệt</p>
+    </div>
+</div>
+{{/if}}
+
+<style>
+.notification-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-item.unread {
+    background-color: #e7f3ff;
+}
+
+.notification-item.unread:hover {
+    background-color: #daeeff;
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.unread .notification-icon {
+    background-color: #cfe7ff;
+}
+</style>
+
+<script>
+async function markAllAsRead() {
+    try {
+        const response = await fetch('/notifications/mark-all-as-read', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        });
+        
+        if (response.ok) {
+            // Xóa class unread từ tất cả các thông báo
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.classList.remove('unread');
+            });
+            // Cập nhật badge số lượng thông báo
+            const badge = document.querySelector('.notification-badge');
+            if (badge) {
+                badge.style.display = 'none';
+            }
+        } else {
+            console.error('Error response:', await response.text());
+        }
+    } catch (error) {
+        console.error('Error marking all as read:', error);
+    }
+}
+
+async function markAsRead(id, redirectUrl) {
+    try {
+        const response = await fetch(`/notifications/${id}/mark-as-read`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+        });
+        
+        if (response.ok) {
+            // Chuyển hướng đến trang chi tiết tin đăng
+            window.location.href = redirectUrl;
+        } else {
+            console.error('Error response:', await response.text());
+        }
+    } catch (error) {
+        console.error('Error marking as read:', error);
+    }
+}
+</script> 

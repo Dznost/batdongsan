@@ -1,0 +1,332 @@
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}}</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    {{#if (eq title "Chi tiết tin đăng")}}
+      <link
+        href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+        rel="stylesheet"
+      />
+    {{/if}}
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: linear-gradient(135deg, #f2f2f2 0%, #f2f2f2 100%); box-shadow: 0 2px 20px rgba(224, 60, 49, 0.3); backdrop-filter: blur(10px);"
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="/" style="font-size: 1.5rem;">
+          <img class="logo-blue-group" src="/images/logo-blue-group.png" alt="Logo">
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link fw-semibold px-3 py-2 rounded-pill mx-1" href="/" style="transition: all 0.3s ease;">
+                <i class="fas fa-home me-1"></i>Trang chủ
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fw-semibold px-3 py-2 rounded-pill mx-1" href="/posts" style="transition: all 0.3s ease;">
+                <i class="fas fa-list me-1"></i>Danh sách BĐS
+              </a>
+            </li>
+            {{#if user}}
+              <li class="nav-item">
+                <a class="nav-link fw-semibold px-3 py-2 rounded-pill mx-1" href="/posts/create" style="transition: all 0.3s ease;">
+                  <i class="fas fa-plus me-1"></i>Đăng tin
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link fw-semibold px-3 py-2 rounded-pill mx-1" href="/my-posts" style="transition: all 0.3s ease;">
+                  <i class="fas fa-newspaper me-1"></i>Tin của tôi
+                </a>
+              </li>
+            {{/if}}
+          </ul>
+
+          <ul class="navbar-nav">
+            {{#if user}}
+              <li class="nav-item me-2">
+                <a class="nav-link position-relative" href="/notifications">
+                  <i class="fas fa-bell"></i>
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" style="display: none;">
+                    0
+                  </span>
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle fw-semibold px-3 py-2 rounded-pill"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  style="background: rgba(255, 255, 255, 0.1); transition: all 0.3s ease;"
+                >
+                  {{#if user.avatar}}
+                    <img
+                      src="{{user.avatar}}"
+                      alt="Avatar"
+                      class="rounded-circle me-1"
+                      width="24"
+                      height="24"
+                    />
+                  {{else}}
+                    <i class="fas fa-user me-1"></i>
+                  {{/if}}
+                  {{user.name}}
+                  {{#if (eq user.role "admin")}}
+                    <span class="badge bg-danger ms-1">Admin</span>
+                  {{/if}}
+                </a>
+                <ul class="dropdown-menu">
+                  <li><h6 class="dropdown-header">{{user.email}}</h6></li>
+                  <li><hr class="dropdown-divider" /></li>
+                  {{#if (eq user.role "admin")}}
+                    <li><a class="dropdown-item" href="/admin">
+                        <i class="fas fa-cog me-2"></i>Quản trị
+                      </a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                  {{/if}}
+                  <li><a class="dropdown-item" href="/profile">
+                      <i class="fas fa-user me-2"></i>Hồ sơ
+                    </a></li>
+                  <li><a class="dropdown-item" href="/my-posts">
+                      <i class="fas fa-list me-2"></i>Tin của tôi
+                    </a></li>
+                  <li><hr class="dropdown-divider" /></li>
+                  <li><a class="dropdown-item" href="/logout">
+                      <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                    </a></li>
+                </ul>
+              </li>
+            {{else}}
+              <li class="nav-item">
+                <a class="nav-link fw-semibold px-3 py-2 rounded-pill mx-1" href="/login" style="transition: all 0.3s ease;">
+                  <i class="fas fa-sign-in-alt me-1"></i>
+                  Đăng nhập
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link fw-semibold px-3 py-2 rounded-pill mx-1" href="/register" style="background: rgba(255, 255, 255, 0.2); transition: all 0.3s ease;">
+                  <i class="fas fa-user-plus me-1"></i>
+                  Đăng ký
+                </a>
+              </li>
+            {{/if}}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    {{#if success}}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{success}}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+    {{/if}}
+
+    {{#if error}}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{error}}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+    {{/if}}
+    <main class="container-fluid">
+      {{{body}}}
+    </main>
+    <footer class="text-light mt-5" style="background: linear-gradient(135deg, #212529 0%, #2c3e50 100%); position: relative; overflow: hidden;">
+      <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10">
+        <div class="position-absolute" style="top: 10%; left: 10%; transform: rotate(15deg);">
+          <i class="fas fa-home fa-2x"></i>
+        </div>
+        <div class="position-absolute" style="top: 30%; right: 15%; transform: rotate(-15deg);">
+          <i class="fas fa-building fa-2x"></i>
+        </div>
+        <div class="position-absolute" style="bottom: 30%; left: 20%; transform: rotate(25deg);">
+          <i class="fas fa-key fa-2x"></i>
+        </div>
+        <div class="position-absolute" style="bottom: 15%; right: 10%; transform: rotate(-20deg);">
+          <i class="fas fa-chart-line fa-2x"></i>
+        </div>
+      </div>
+
+      <div class="container position-relative py-5">
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6">
+            <div class="footer-section">
+              <h4 class="fw-bold mb-4" style="color: #E03C31;">
+                <i class="fas fa-home me-2"></i>
+                Bất Động Sản
+              </h4>
+              <p class="mb-4 text-light-emphasis">
+                Nền tảng rao vặt bất động sản hàng đầu Việt Nam. Kết nối người mua, người bán và nhà đầu tư một cách hiệu quả và an toàn.
+              </p>
+              <div class="social-links">
+                <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2" style="width: 40px; height: 40px;">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2" style="width: 40px; height: 40px;">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2" style="width: 40px; height: 40px;">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 40px; height: 40px;">
+                  <i class="fab fa-youtube"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-section">
+              <h5 class="fw-bold mb-4" style="color: #FFC107;">Liên kết</h5>
+              <ul class="list-unstyled">
+                <li class="mb-2">
+                  <a href="/" class="text-light-emphasis text-decoration-none footer-link">
+                    <i class="fas fa-chevron-right me-2 small"></i>Trang chủ
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a href="/posts" class="text-light-emphasis text-decoration-none footer-link">
+                    <i class="fas fa-chevron-right me-2 small"></i>Danh sách BĐS
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a href="/posts/create" class="text-light-emphasis text-decoration-none footer-link">
+                    <i class="fas fa-chevron-right me-2 small"></i>Đăng tin
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a href="/about" class="text-light-emphasis text-decoration-none footer-link">
+                    <i class="fas fa-chevron-right me-2 small"></i>Về chúng tôi
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a href="/contact" class="text-light-emphasis text-decoration-none footer-link">
+                    <i class="fas fa-chevron-right me-2 small"></i>Liên hệ
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="footer-section">
+              <h5 class="fw-bold mb-4" style="color: #FFC107;">Danh mục</h5>
+              <ul class="list-unstyled">
+                <li class="mb-2">
+                  <a href="/posts?category=chung cư" class="text-light-emphasis text-decoration-none footer-link">
+                    <i class="fas fa-building me-2 small"></i>Chung cư
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a href="/posts?category=nhà riêng" class="text-light-emphasis text-decoration-none footer-link">
+                    <i class="fas fa-home me-2 small"></i>Nhà riêng
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a href="/posts?category=đất nền" class="text-light-emphasis text-decoration-none footer-link">
+                    <i class="fas fa-map me-2 small"></i>Đất nền
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a href="/posts?category=biệt thự" class="text-light-emphasis text-decoration-none footer-link">
+                    <i class="fas fa-crown me-2 small"></i>Biệt thự
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a href="/posts?category=shophouse" class="text-light-emphasis text-decoration-none footer-link">
+                    <i class="fas fa-store me-2 small"></i>Shophouse
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="footer-section">
+              <h5 class="fw-bold mb-4" style="color: #FFC107;">Liên hệ</h5>
+              <div class="contact-info">
+                <div class="d-flex align-items-start mb-3">
+                  <div class="contact-icon me-3">
+                    <i class="fas fa-map-marker-alt" style="color: #E03C31;"></i>
+                  </div>
+                  <div>
+                    <p class="mb-0 text-light-emphasis">183 Song Hành, Quận 12, TP.HCM</p>
+                  </div>
+                </div>
+                <div class="d-flex align-items-start mb-3">
+                  <div class="contact-icon me-3">
+                    <i class="fas fa-phone" style="color: #E03C31;"></i>
+                  </div>
+                  <div>
+                    <p class="mb-0 text-light-emphasis">0977 456 789</p>
+                  </div>
+                </div>
+                <div class="d-flex align-items-start mb-3">
+                  <div class="contact-icon me-3">
+                    <i class="fas fa-envelope" style="color: #E03C31;"></i>
+                  </div>
+                  <div>
+                    <p class="mb-0 text-light-emphasis">contact@batdongsan.com</p>
+                  </div>
+                </div>
+                <div class="d-flex align-items-start">
+                  <div class="contact-icon me-3">
+                    <i class="fas fa-clock" style="color: #E03C31;"></i>
+                  </div>
+                  <div>
+                    <p class="mb-0 text-light-emphasis">T2 - T7: 8:00 - 18:00</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4 opacity-25">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <p class="mb-0 text-light-emphasis">
+              &copy; 2025 <strong style="color: #E03C31;">Bất Động Sản</strong>. All rights reserved.
+            </p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <div class="footer-links">
+              <a href="/privacy" class="text-light-emphasis text-decoration-none me-3 footer-link">Chính sách bảo mật</a>
+              <a href="/terms" class="text-light-emphasis text-decoration-none footer-link">Điều khoản sử dụng</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    ></script>
+    <script src="/js/main.js"></script>
+  </body>
+</html>

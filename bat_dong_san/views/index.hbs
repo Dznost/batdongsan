@@ -1,0 +1,381 @@
+
+<section class="hero-section d-flex align-items-center">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="hero-content text-white">
+          <h1 class="display-4 fw-bold mb-4">
+            Tìm kiếm
+            <span style="color: #ffc107;">Bất Động Sản</span>
+            <br />Uy tín & Chất lượng
+          </h1>
+          <p class="lead mb-4">
+            Nền tảng rao vặt bất động sản hàng đầu với hàng ngàn tin đăng chất
+            lượng. Tìm ngôi nhà mơ ước của bạn ngay hôm nay!
+          </p>
+          <div class="hero-stats d-flex gap-4 mb-4">
+            <div class="stat-item">
+              <h3 class="h4 mb-0" style="color: #ffc107;">1000+</h3>
+              <small>Tin đăng</small>
+            </div>
+            <div class="stat-item">
+              <h3 class="h4 mb-0" style="color: #ffc107;">500+</h3>
+              <small>Thành viên</small>
+            </div>
+            <div class="stat-item">
+              <h3 class="h4 mb-0" style="color: #ffc107;">200+</h3>
+              <small>Giao dịch</small>
+            </div>
+          </div>
+          <div class="hero-buttons">
+            {{#if user}}
+              <a href="/posts/create" class="btn btn-lg me-3" style="background: #ffc107; color: #212529; border: none;">
+                <i class="fas fa-plus me-2"></i>Đăng tin ngay
+              </a>
+            {{else}}
+              <a href="/register" class="btn btn-lg me-3" style="background: #ffc107; color: #212529; border: none;">
+                <i class="fas fa-user-plus me-2"></i>Đăng ký ngay
+              </a>
+            {{/if}}
+            <a href="/posts" class="btn btn-outline-light btn-lg">
+              <i class="fas fa-search me-2"></i>Xem tin đăng
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="hero-search-card">
+          <div class="card shadow-lg border-0 ">
+            <div class="card-logo">
+              <img src="/images/logo-blue-group.png" alt="" style="width: 280px">
+            </div>
+            <div class="card-body p-4">
+              <form action="/posts" method="GET">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold form-label-top">Loại hình</label>
+                  <select name="type" class="form-select form-select-lg">
+                    <option value="">Tất cả loại hình</option>
+                    <option value="bán">Nhà đất bán</option>
+                    <option value="cho thuê">Nhà đất cho thuê</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Loại BĐS</label>
+                  <select name="category" class="form-select form-select-lg">
+                    <option value="">Tất cả loại BĐS</option>
+                    {{#each categories}}
+                      <option value="{{name}}">{{name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+                <div class="mb-4">
+                  <label class="form-label fw-semibold">Từ khóa</label>
+                  <input
+                    type="text"
+                    name="keyword"
+                    class="form-control form-control-lg"
+                    placeholder="Nhập địa chỉ, dự án, khu vực..."
+                  />
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                  <i class="fas fa-search me-2"></i>Tìm kiếm ngay
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h2 class="display-5 fw-bold text-primary mb-3">Tin đăng nổi bật</h2>
+        <p class="lead text-muted mb-4">Khám phá những bất động sản chất lượng
+          được cập nhật mới nhất</p>
+        <div class="d-flex justify-content-center gap-3 mb-4">
+          <button
+            class="btn btn-outline-primary filter-btn active"
+            data-filter="all"
+          >
+            <i class="fas fa-th me-2"></i>Tất cả
+          </button>
+          <button class="btn btn-outline-primary filter-btn" data-filter="bán">
+            <i class="fas fa-home me-2"></i>Nhà đất bán
+          </button>
+          <button
+            class="btn btn-outline-primary filter-btn"
+            data-filter="cho thuê"
+          >
+            <i class="fas fa-key me-2"></i>Cho thuê
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" id="properties-list">
+      {{#if posts}}
+        {{#each posts}}
+          <div class="col-lg-4 col-md-6 mb-4 property-item" data-type="{{type}}">
+            <div class="card property-card h-100 border-0 shadow-sm">
+              <div class="position-relative">
+                {{#if images}}
+                  <img
+                    src="{{firstImage images}}"
+                    class="card-img-top"
+                    alt="{{title}}"
+                    style="height: 250px; object-fit: cover;"
+                  />
+                {{else}}
+                  <img
+                    src="/images/no-image.svg"
+                    class="card-img-top"
+                    alt="{{title}}"
+                    style="height: 250px; object-fit: cover;"
+                  />
+                {{/if}}
+
+                <div class="position-absolute top-0 start-0 m-3">
+                  <span class="badge bg-primary px-3 py-2 rounded-pill">
+                    <i class="fas fa-{{#if (eq type 'bán')}}home{{else}}key{{/if}} me-1"></i>
+                    {{type}}
+                  </span>
+                </div>
+
+                <div class="position-absolute top-0 end-0 m-3">
+                  <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
+                    {{formatPrice price}}
+                  </span>
+                </div>
+
+                {{#if images}}
+                  <div class="position-absolute bottom-0 end-0 m-3">
+                    <span class="badge bg-dark bg-opacity-75 px-2 py-1 rounded">
+                      <i class="fas fa-camera me-1"></i>{{length images}}
+                    </span>
+                  </div>
+                {{/if}}
+              </div>
+
+              <div class="card-body p-4">
+                <div class="mb-2">
+                  <span class="badge bg-light text-primary border border-primary">{{category}}</span>
+                </div>
+
+                <h5 class="card-title fw-bold mb-3 text-truncate-2">{{title}}</h5>
+
+                <div class="property-details mb-3">
+                  <div class="d-flex align-items-center mb-2 text-muted">
+                    <i class="fas fa-expand-arrows-alt me-2 text-primary"></i>
+                    <span>{{area}} m²</span>
+                  </div>
+                  <div class="d-flex align-items-center text-muted">
+                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                    <span class="text-truncate">{{truncate address 40}}</span>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <div class="d-flex align-items-center text-muted small">
+                    <i class="fas fa-user me-1"></i>
+                    <span>{{userId.name}}</span>
+                  </div>
+                  <div class="text-muted small">
+                    <i class="fas fa-clock me-1"></i>
+                    {{timeAgo createdAt}}
+                  </div>
+                </div>
+
+                <a href="/posts/{{_id}}" class="btn btn-primary w-100 rounded-pill">
+                  <i class="fas fa-eye me-2"></i>Xem chi tiết
+                </a>
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      {{else}}
+        <div class="col-12 text-center">
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            Chưa có tin đăng nào được duyệt.
+          </div>
+        </div>
+      {{/if}}
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-12">
+        <nav aria-label="Phân trang">
+          <ul class="pagination justify-content-center">
+            
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 position-relative overflow-hidden" style="background: var(--gradient-primary);">
+  <div class="container text-center text-white position-relative">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="mb-4">
+          <i class="fas fa-bullhorn fa-3x mb-4" style="color: #ffc107;"></i>
+          <h2 class="display-5 fw-bold mb-4">Bạn có BĐS cần bán/cho thuê?</h2>
+          <p class="lead mb-4 opacity-90">
+            Đăng tin miễn phí và tiếp cận hàng ngàn khách hàng tiềm năng.
+            Giao diện thân thiện, quy trình đơn giản, hiệu quả cao!
+          </p>
+        </div>
+
+        <div class="row g-4 mb-5">
+          <div class="col-md-4">
+            <div class="text-center">
+              <div class="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                <i class="fas fa-upload fa-2x" style="color: #ffc107;"></i>
+              </div>
+              <h5 class="fw-bold">Đăng tin dễ dàng</h5>
+              <p class="small opacity-90">Chỉ vài bước đơn giản</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-center">
+              <div class="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                <i class="fas fa-users fa-2x" style="color: #ffc107;"></i>
+              </div>
+              <h5 class="fw-bold">Tiếp cận khách hàng</h5>
+              <p class="small opacity-90">Hàng ngàn người xem mỗi ngày</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="text-center">
+              <div class="bg-white bg-opacity-20 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                <i class="fas fa-chart-line fa-2x" style="color: #ffc107;"></i>
+              </div>
+              <h5 class="fw-bold">Hiệu quả cao</h5>
+              <p class="small opacity-90">Tỷ lệ thành công 85%</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10">
+    <div class="position-absolute" style="top: 10%; left: 10%; transform: rotate(15deg);">
+      <i class="fas fa-home fa-3x"></i>
+    </div>
+    <div class="position-absolute" style="top: 20%; right: 15%; transform: rotate(-15deg);">
+      <i class="fas fa-building fa-2x"></i>
+    </div>
+    <div class="position-absolute" style="bottom: 20%; left: 20%; transform: rotate(25deg);">
+      <i class="fas fa-key fa-2x"></i>
+    </div>
+    <div class="position-absolute" style="bottom: 15%; right: 10%; transform: rotate(-20deg);">
+      <i class="fas fa-chart-line fa-2x"></i>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h2 class="display-6 fw-bold text-primary mb-3">Tại sao chọn chúng tôi?</h2>
+        <p class="lead text-muted">Những ưu điểm vượt trội khi sử dụng nền tảng của chúng tôi</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-3 col-md-6">
+        <div class="text-center h-100">
+          <div class="feature-icon bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+            <i class="fas fa-shield-alt fa-2x text-primary"></i>
+          </div>
+          <h4 class="fw-bold mb-3">Uy tín & An toàn</h4>
+          <p class="text-muted">Tất cả tin đăng được kiểm duyệt kỹ lưỡng, đảm bảo thông tin chính xác và đáng tin cậy.</p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="text-center h-100">
+          <div class="feature-icon bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+            <i class="fas fa-rocket fa-2x text-success"></i>
+          </div>
+          <h4 class="fw-bold mb-3">Nhanh chóng</h4>
+          <p class="text-muted">Tìm kiếm thông minh với bộ lọc đa dạng, giúp bạn tìm được BĐS phù hợp trong vài phút.</p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="text-center h-100">
+          <div class="feature-icon bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+            <i class="fas fa-heart fa-2x text-warning"></i>
+          </div>
+          <h4 class="fw-bold mb-3">Miễn phí</h4>
+          <p class="text-muted">Đăng tin và tìm kiếm hoàn toàn miễn phí. Không có phí ẩn hay chi phí phát sinh.</p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="text-center h-100">
+          <div class="feature-icon bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+            <i class="fas fa-headset fa-2x text-info"></i>
+          </div>
+          <h4 class="fw-bold mb-3">Hỗ trợ 24/7</h4>
+          <p class="text-muted">Đội ngũ chăm sóc khách hàng chuyên nghiệp, sẵn sàng hỗ trợ bạn mọi lúc mọi nơi.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Property Filter Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const propertyItems = document.querySelectorAll('.property-item');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            // Filter properties
+            propertyItems.forEach(item => {
+                const itemType = item.getAttribute('data-type');
+
+                if (filter === 'all' || itemType === filter) {
+                    item.style.display = 'block';
+                    item.style.animation = 'fadeIn 0.5s ease-in-out';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+
+// Add CSS animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .filter-btn.active {
+        background-color: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+        color: white !important;
+    }
+`;
+document.head.appendChild(style);
+</script>

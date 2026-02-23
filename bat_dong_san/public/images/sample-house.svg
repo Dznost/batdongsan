@@ -1,0 +1,15 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#e3f2fd"/>
+  
+  <!-- House -->
+  <polygon points="200,80 120,160 280,160" fill="#2196f3"/>
+  <rect x="140" y="160" width="120" height="100" fill="#fff"/>
+  <rect x="160" y="180" width="30" height="40" fill="#1976d2"/>
+  <rect x="210" y="180" width="30" height="40" fill="#1976d2"/>
+  <rect x="180" y="230" width="40" height="30" fill="#795548"/>
+  
+  <!-- Text -->
+  <text x="200" y="290" font-family="Arial, sans-serif" font-size="16" fill="#1976d2" text-anchor="middle">
+    Bất động sản mẫu
+  </text>
+</svg>

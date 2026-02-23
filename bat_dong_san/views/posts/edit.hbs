@@ -1,0 +1,305 @@
+
+<link
+  href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
+  rel="stylesheet"
+/>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="/posts">Danh sách BĐS</a></li>
+                    <li class="breadcrumb-item"><a href="/posts/{{post._id}}">{{truncate post.title 30}}</a></li>
+                    <li class="breadcrumb-item active">Chỉnh sửa</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        Chỉnh sửa tin đăng
+                    </h4>
+                    <p class="mb-0 mt-2 opacity-75">
+                        Cập nhật thông tin tin đăng của bạn
+                    </p>
+                </div>
+                
+                <div class="card-body">
+                    
+                    {{#if (eq post.isApproved false)}}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Tin đăng bị từ chối:</strong> {{post.rejectionReason}}
+                        <br><small>Vui lòng chỉnh sửa và gửi lại để được duyệt.</small>
+                    </div>
+                    {{else if (eq post.isApproved null)}}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-clock me-2"></i>
+                        <strong>Tin đăng đang chờ duyệt.</strong> Sau khi chỉnh sửa, tin sẽ được gửi lại để duyệt.
+                    </div>
+                    {{else}}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Tin đăng đã được duyệt.</strong> Sau khi chỉnh sửa, tin sẽ cần được duyệt lại.
+                    </div>
+                    {{/if}}
+
+                    <form action="/posts/{{post._id}}/update" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        
+                        <div class="mb-4">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Thông tin cơ bản
+                            </h5>
+
+                            <div class="mb-3">
+                                <label for="title" class="form-label">
+                                    Tiêu đề tin đăng <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="title" 
+                                    name="title" 
+                                    value="{{post.title}}"
+                                    required
+                                    minlength="10"
+                                    maxlength="200"
+                                >
+                                <div class="invalid-feedback">
+                                    Tiêu đề phải có từ 10-200 ký tự.
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="type" class="form-label">
+                                        Loại hình <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="type" name="type" required>
+                                        <option value="">Chọn loại hình</option>
+                                        <option value="bán" {{#if (eq post.type 'bán')}}selected{{/if}}>Bán</option>
+                                        <option value="cho thuê" {{#if (eq post.type 'cho thuê')}}selected{{/if}}>Cho thuê</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Vui lòng chọn loại hình.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label">
+                                        Loại bất động sản <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="category" name="category" required>
+                                        <option value="">Chọn loại BĐS</option>
+                                        {{#each categories}}
+                                        <option value="{{name}}" {{#if (eq ../post.category name)}}selected{{/if}}>{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Vui lòng chọn loại bất động sản.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">
+                                    Mô tả chi tiết <span class="text-danger">*</span>
+                                </label>
+                                <input type="hidden" name="description" id="description" />
+                                <div id="editor">
+                                    {{{post.description}}}
+                                </div>
+                                <div class="invalid-feedback">
+                                    Mô tả phải có từ 50-2000 ký tự.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-calculator me-2"></i>
+                                Giá và diện tích
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="price" class="form-label">
+                                        Giá (VNĐ) <span class="text-danger">*</span>
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        class="form-control" 
+                                        id="price" 
+                                        name="price" 
+                                        value="{{post.price}}"
+                                        required
+                                        min="0"
+                                        max="999999999999"
+                                    >
+                                    <div class="invalid-feedback">
+                                        Vui lòng nhập giá hợp lệ.
+                                    </div>
+                                    <div class="form-text" id="priceDisplay">{{formatCurrency post.price}}</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="area" class="form-label">
+                                        Diện tích (m²) <span class="text-danger">*</span>
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        class="form-control" 
+                                        id="area" 
+                                        name="area" 
+                                        value="{{post.area}}"
+                                        required
+                                        min="1"
+                                        max="10000"
+                                    >
+                                    <div class="invalid-feedback">
+                                        Diện tích phải từ 1-10,000 m².
+                                    </div>
+                                    <div class="form-text" id="pricePerSqm">{{formatCurrency post.pricePerSqm}}/m²</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                Địa chỉ và liên hệ
+                            </h5>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label">
+                                    Địa chỉ <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="address" 
+                                    name="address" 
+                                    value="{{post.address}}"
+                                    required
+                                    minlength="10"
+                                    maxlength="500"
+                                >
+                                <div class="invalid-feedback">
+                                    Địa chỉ phải có từ 10-500 ký tự.
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">
+                                    Số điện thoại liên hệ <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="tel" 
+                                    class="form-control" 
+                                    id="phone" 
+                                    name="phone" 
+                                    value="{{post.phone}}"
+                                    required
+                                    pattern="^[0-9]{10,11}$"
+                                >
+                                <div class="invalid-feedback">
+                                    Số điện thoại phải có 10-11 chữ số.
+                                </div>
+                            </div>
+                        </div>
+
+                        {{#if post.images}}
+                        <div class="mb-4">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-images me-2"></i>
+                                Hình ảnh hiện tại
+                            </h5>
+                            
+                            <div class="row" id="currentImages">
+                                {{#each post.images}}
+                                <div class="col-md-3 mb-3">
+                                    <div class="position-relative">
+                                        <img src="{{this}}" alt="Hình {{add @index 1}}" class="img-fluid rounded" style="height: 150px; width: 100%; object-fit: cover;">
+                                        <div class="position-absolute top-0 end-0 p-1">
+                                            <input type="checkbox" name="removeImages" value="{{this}}" class="form-check-input" id="remove{{@index}}">
+                                            <label for="remove{{@index}}" class="form-check-label bg-danger text-white px-2 py-1 rounded">
+                                                <i class="fas fa-trash"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Tick để xóa</small>
+                                </div>
+                                {{/each}}
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        <div class="mb-4">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-plus me-2"></i>
+                                Thêm hình ảnh mới
+                            </h5>
+
+                            <input
+                                type="file"
+                                id="images"
+                                name="images"
+                                multiple
+                                accept="image/*"
+                            >
+
+                            <div class="mt-2 text-muted small">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Đã chọn <span id="file-count">0</span> ảnh mới
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-save me-2"></i>
+                                Cập nhật tin đăng
+                            </button>
+                            <a href="/posts/{{post._id}}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>
+                                Hủy
+                            </a>
+                        </div>
+
+                        <div class="mt-3">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Lưu ý:</strong> Sau khi cập nhật, tin đăng sẽ cần được kiểm duyệt lại trước khi hiển thị công khai.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/edit-post.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
+<script>
+  const quill = new Quill('#editor', {
+    theme: 'snow'
+  });
+
+  // Trước khi submit form, gán nội dung vào hidden input
+  const form = document.querySelector('form');
+  form.onsubmit = function() {
+    // Lấy nội dung HTML của editor
+    const description = document.querySelector('input[name=description]');
+    description.value = quill.root.innerHTML;
+  };
+</script>

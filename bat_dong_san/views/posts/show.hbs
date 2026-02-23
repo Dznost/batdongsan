@@ -1,0 +1,499 @@
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="/posts">Danh sách BĐS</a></li>
+                    <li class="breadcrumb-item active">{{truncate post.title 50}}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        
+        <div class="col-lg-8">
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h1 class="h3 mb-2">{{pageTitle}}</h1>
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="badge bg-{{#if (eq post.type 'bán')}}danger{{else}}success{{/if}} fs-6">
+                                    {{post.type}}
+                                </span>
+                                <span class="badge bg-secondary fs-6">{{post.category}}</span>
+                                <span class="badge bg-info fs-6">
+                                    <i class="fas fa-eye me-1"></i>
+                                    {{post.views}} lượt xem
+                                </span>
+                            </div>
+                        </div>
+                        {{#if isOwner}}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/posts/{{post._id}}/edit">
+                                    <i class="fas fa-edit me-2"></i>Chỉnh sửa
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" onclick="deletePost('{{post._id}}')">
+                                    <i class="fas fa-trash me-2"></i>Xóa tin
+                                </a></li>
+                            </ul>
+                        </div>
+                        {{/if}}
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-tag text-danger me-2 fs-4"></i>
+                                <div>
+                                    <div class="fs-3 fw-bold text-danger">{{formatPrice post.price}}</div>
+                                    <small class="text-muted">{{formatPrice post.pricePerSqm}}/m²</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-expand-arrows-alt text-primary me-2 fs-4"></i>
+                                <div>
+                                    <div class="fs-4 fw-bold">{{post.area}} m²</div>
+                                    <small class="text-muted">Diện tích</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-map-marker-alt text-success me-2"></i>
+                        <span class="fs-5">{{post.address}}</span>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-3 text-muted">
+                        <span>
+                            <i class="fas fa-calendar me-1"></i>
+                            Đăng ngày {{formatDate post.createdAt}}
+                        </span>
+                        <span>
+                            <i class="fas fa-clock me-1"></i>
+                            {{post.timeAgo}}
+                        </span>
+                        {{#if post.approvedAt}}
+                        <span>
+                            <i class="fas fa-check-circle text-success me-1"></i>
+                            Đã duyệt
+                        </span>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+
+            {{#if post.images}}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-images me-2"></i>
+                        Hình ảnh ({{length post.images}})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="imageGallery">
+                        {{#each post.images}}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <a href="{{this}}"
+                               data-fancybox="property-gallery"
+                               data-caption="Hình ảnh {{add @index 1}} - {{../pageTitle}}"
+                               class="gallery-item">
+                                <img
+                                    src="{{this}}"
+                                    alt="Hình ảnh {{add @index 1}}"
+                                    class="img-fluid rounded gallery-image"
+                                    style="height: 200px; width: 100%; object-fit: cover; cursor: pointer; transition: transform 0.3s ease;"
+                                    onmouseover="this.style.transform='scale(1.05)'"
+                                    onmouseout="this.style.transform='scale(1)'"
+                                >
+                                <div class="gallery-overlay">
+                                    <i class="fas fa-search-plus"></i>
+                                </div>
+                            </a>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Mô tả chi tiết
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="post-description">
+                        {{#each (split post.description '\n')}}
+                            <p>{{{this}}}</p>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+
+            {{#if relatedPosts}}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-home me-2"></i>
+                        Tin đăng liên quan
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {{#each relatedPosts}}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                {{#if images}}
+                                    <img src="{{firstImage images}}" class="card-img-top" alt="{{title}}" style="height: 150px; object-fit: cover;">
+                                {{else}}
+                                    <img src="/images/no-image.svg" class="card-img-top" alt="{{title}}" style="height: 150px; object-fit: cover;">
+                                {{/if}}
+                                <div class="card-body">
+                                    <h6 class="card-title text-truncate-2">{{title}}</h6>
+                                    <div class="text-danger fw-bold">{{formatPrice price}}</div>
+                                    <div class="text-muted small">{{area}} m² • {{timeAgo}}</div>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <a href="/posts/{{_id}}" class="btn btn-outline-primary btn-sm w-100">
+                                        Xem chi tiết
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+
+        <div class="col-lg-4">
+            
+            <div class="card mb-4 sticky-top" style="top: 20px;">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user me-2"></i>
+                        Thông tin liên hệ
+                    </h5>
+                </div>
+                <div class="card-body">
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">{{post.userId.name}}</h6>
+                            <small class="text-muted">
+                                Thành viên từ {{formatDate post.userId.createdAt}}
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="tel:{{post.phone}}" class="btn btn-success">
+                            <i class="fas fa-phone me-2"></i>
+                            {{post.phone}}
+                        </a>
+                        <a href="sms:{{post.phone}}" class="btn btn-outline-primary">
+                            <i class="fas fa-sms me-2"></i>
+                            Gửi tin nhắn
+                        </a>
+                        {{#if post.userId.email}}
+                        <a href="mailto:{{post.userId.email}}" class="btn btn-outline-secondary">
+                            <i class="fas fa-envelope me-2"></i>
+                            Gửi email
+                        </a>
+                        {{/if}}
+                    </div>
+
+                    <div class="mt-3 p-3 bg-light rounded">
+                        <h6 class="text-warning">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            Lưu ý an toàn
+                        </h6>
+                        <ul class="small mb-0">
+                            <li>Gặp mặt tại nơi công cộng</li>
+                            <li>Kiểm tra giấy tờ pháp lý</li>
+                            <li>Không chuyển tiền trước</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Thống kê nhanh
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="border-end">
+                                <div class="fs-4 fw-bold text-primary">{{post.views}}</div>
+                                <small class="text-muted">Lượt xem</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="fs-4 fw-bold text-success">{{post.timeAgo}}</div>
+                            <small class="text-muted">Đăng tin</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.gallery-item {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 0.5rem;
+}
+
+.gallery-overlay i {
+    color: white;
+    font-size: 2rem;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+.gallery-item:hover {
+    text-decoration: none;
+}
+
+/* Custom Fancybox styling */
+.fancybox__caption {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.fancybox__counter {
+    color: white;
+    font-size: 12px;
+}
+
+/* Gallery grid improvements */
+#imageGallery .col-md-6:first-child .gallery-image {
+    height: 250px !important;
+}
+
+@media (max-width: 768px) {
+    #imageGallery .col-md-6:first-child .gallery-image {
+        height: 200px !important;
+    }
+}
+
+/* Hover effects */
+.gallery-image {
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+}
+
+.gallery-item:hover .gallery-image {
+    filter: brightness(0.8);
+    transform: scale(1.02);
+}
+
+/* Gallery overlay improvements */
+.gallery-overlay {
+    border-radius: 0.5rem;
+    backdrop-filter: blur(2px);
+}
+
+.gallery-overlay i {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+</style>
+
+{{#if isOwner}}
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Xác nhận xóa
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa tin đăng này không?</p>
+                <p class="text-muted">Hành động này không thể hoàn tác.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>
+                        Xóa tin đăng
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+
+<script>
+    // Initialize Fancybox
+    document.addEventListener('DOMContentLoaded', function() {
+        Fancybox.bind('[data-fancybox="property-gallery"]', {
+            // Options
+            animated: true,
+            showClass: "fancybox-fadeIn",
+            hideClass: "fancybox-fadeOut",
+
+            // UI options
+            Toolbar: {
+                display: {
+                    left: ["infobar"],
+                    middle: [
+                        "zoomIn",
+                        "zoomOut",
+                        "toggle1to1",
+                        "rotateCCW",
+                        "rotateCW",
+                        "flipX",
+                        "flipY",
+                    ],
+                    right: ["slideshow", "thumbs", "close"],
+                },
+            },
+
+            // Thumbs
+            Thumbs: {
+                autoStart: false,
+            },
+
+            // Images
+            Images: {
+                zoom: true,
+                protected: true
+            },
+
+            // Slideshow
+            Slideshow: {
+                autoStart: false,
+                speed: 3000
+            },
+
+            // Localization
+            l10n: {
+                CLOSE: "Đóng",
+                NEXT: "Tiếp theo",
+                PREV: "Trước đó",
+                MODAL: "Bạn có thể đóng modal này bằng phím ESC",
+                ERROR: "Có lỗi xảy ra khi tải ảnh",
+                IMAGE_ERROR: "Không thể tải ảnh",
+                ELEMENT_NOT_FOUND: "Không tìm thấy phần tử HTML",
+                AJAX_NOT_FOUND: "Lỗi khi tải AJAX: Không tìm thấy",
+                AJAX_FORBIDDEN: "Lỗi khi tải AJAX: Bị cấm",
+                IFRAME_ERROR: "Lỗi khi tải trang",
+                TOGGLE_ZOOM: "Phóng to/thu nhỏ",
+                TOGGLE_THUMBS: "Hiện/ẩn thumbnails",
+                TOGGLE_SLIDESHOW: "Bật/tắt slideshow",
+                TOGGLE_FULLSCREEN: "Bật/tắt toàn màn hình",
+                DOWNLOAD: "Tải xuống"
+            }
+        });
+    });
+
+    {{#if isOwner}}
+    // Delete post confirmation
+    function deletePost(postId) {
+        document.getElementById('deleteForm').action = `/posts/${postId}`;
+        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    }
+    {{/if}}
+
+    // Contact form
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Get form data
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang gửi...';
+        submitBtn.disabled = true;
+
+        // Simulate sending (replace with actual API call)
+        setTimeout(() => {
+            // Reset form
+            this.reset();
+
+            // Show success message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                Cảm ơn bạn đã quan tâm! Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            // Insert alert before form
+            this.parentNode.insertBefore(alertDiv, this);
+
+            // Reset button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+
+            // Auto hide alert after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }, 2000);
+    });
+</script>

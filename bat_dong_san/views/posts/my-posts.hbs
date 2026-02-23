@@ -1,0 +1,318 @@
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Tin đăng của tôi</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2>
+                <i class="fas fa-list me-2"></i>
+                Tin đăng của tôi
+                {{#if pagination.totalPosts}}
+                    <span class="badge bg-primary">{{pagination.totalPosts}}</span>
+                {{/if}}
+            </h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="/posts/create" class="btn btn-success">
+                <i class="fas fa-plus me-2"></i>
+                Đăng tin mới
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link {{#unless filters.status}}active{{/unless}}" href="/my-posts">
+                        <i class="fas fa-list me-1"></i>
+                        Tất cả
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{#if (eq filters.status 'pending')}}active{{/if}}" href="/my-posts?status=pending">
+                        <i class="fas fa-clock me-1"></i>
+                        Chờ duyệt
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{#if (eq filters.status 'approved')}}active{{/if}}" href="/my-posts?status=approved">
+                        <i class="fas fa-check-circle me-1"></i>
+                        Đã duyệt
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{#if (eq filters.status 'rejected')}}active{{/if}}" href="/my-posts?status=rejected">
+                        <i class="fas fa-times-circle me-1"></i>
+                        Từ chối
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    {{#if posts}}
+        <div class="row">
+            {{#each posts}}
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="row g-0">
+                        
+                        <div class="col-md-3">
+                            {{#if images}}
+                                <img src="{{firstImage images}}" class="img-fluid rounded-start h-100" alt="{{title}}" style="object-fit: cover; min-height: 200px;">
+                            {{else}}
+                                <img src="/images/no-image.svg" class="img-fluid rounded-start h-100" alt="{{title}}" style="object-fit: cover; min-height: 200px;">
+                            {{/if}}
+                        </div>
+
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="flex-grow-1">
+                                        <h5 class="card-title">{{title}}</h5>
+                                        <div class="d-flex flex-wrap gap-2 mb-2">
+                                            <span class="badge bg-{{#if (eq type 'bán')}}danger{{else}}success{{/if}}">
+                                                {{type}}
+                                            </span>
+                                            <span class="badge bg-secondary">{{category}}</span>
+
+                                            {{#if (eq isApproved true)}}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-1"></i>
+                                                    Đã duyệt
+                                                </span>
+                                            {{else if (eq isApproved false)}}
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-times me-1"></i>
+                                                    Từ chối
+                                                </span>
+                                            {{else}}
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    Chờ duyệt
+                                                </span>
+                                            {{/if}}
+                                            
+                                            {{#if images}}
+                                            <span class="badge bg-info">
+                                                <i class="fas fa-images me-1"></i>
+                                                {{length images}} ảnh
+                                            </span>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="/posts/{{_id}}">
+                                                <i class="fas fa-eye me-2"></i>Xem chi tiết
+                                            </a></li>
+                                            <li><a class="dropdown-item" href="/posts/{{_id}}/edit">
+                                                <i class="fas fa-edit me-2"></i>Chỉnh sửa
+                                            </a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" href="#" onclick="deletePost('{{_id}}', '{{title}}')">
+                                                <i class="fas fa-trash me-2"></i>Xóa tin
+                                            </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <div class="text-danger fw-bold fs-5">{{formatPrice price}}</div>
+                                        <small class="text-muted">{{formatPrice pricePerSqm}}/m²</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="fw-bold">{{area}} m²</div>
+                                        <small class="text-muted">Diện tích</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="fw-bold">{{views}}</div>
+                                        <small class="text-muted">Lượt xem</small>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <i class="fas fa-map-marker-alt text-primary me-1"></i>
+                                    <span>{{truncate address 80}}</span>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="text-muted small">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Đăng ngày {{formatDate createdAt}}
+                                        <span class="ms-2">
+                                            <i class="fas fa-clock me-1"></i>
+                                            {{timeAgo}}
+                                        </span>
+                                    </div>
+
+                                    {{#if (eq isApproved false)}}
+                                        {{#if rejectionReason}}
+                                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectionModal{{_id}}">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Lý do từ chối
+                                        </button>
+                                        {{/if}}
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{#if (eq isApproved false)}}
+                    {{#if rejectionReason}}
+                    <div class="modal fade" id="rejectionModal{{_id}}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-danger">
+                                        <i class="fas fa-times-circle me-2"></i>
+                                        Lý do từ chối
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Tin đăng:</strong> {{title}}</p>
+                                    <p><strong>Lý do:</strong></p>
+                                    <div class="alert alert-danger">
+                                        {{rejectionReason}}
+                                    </div>
+                                    <p class="text-muted small">
+                                        Bạn có thể chỉnh sửa tin đăng để khắc phục các vấn đề trên và gửi lại để duyệt.
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                    <a href="/posts/{{_id}}/edit" class="btn btn-primary">
+                                        <i class="fas fa-edit me-1"></i>
+                                        Chỉnh sửa tin
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/if}}
+                {{/if}}
+            </div>
+            {{/each}}
+        </div>
+
+        {{#if (gt pagination.totalPages 1)}}
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="Phân trang">
+                    <ul class="pagination justify-content-center">
+                        
+                        {{#if pagination.hasPrev}}
+                            <li class="page-item">
+                                <a class="page-link" href="?{{#if filters.status}}status={{filters.status}}&{{/if}}page={{pagination.prevPage}}">
+                                    <i class="fas fa-chevron-left"></i>
+                                    Trước
+                                </a>
+                            </li>
+                        {{/if}}
+
+                        {{#times pagination.totalPages}}
+                            <li class="page-item {{#if (eq (add @index 1) ../pagination.currentPage)}}active{{/if}}">
+                                <a class="page-link" href="?{{#if ../filters.status}}status={{../filters.status}}&{{/if}}page={{add @index 1}}">
+                                    {{add @index 1}}
+                                </a>
+                            </li>
+                        {{/times}}
+
+                        {{#if pagination.hasNext}}
+                            <li class="page-item">
+                                <a class="page-link" href="?{{#if filters.status}}status={{filters.status}}&{{/if}}page={{pagination.nextPage}}">
+                                    Sau
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {{/if}}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {{/if}}
+        
+    {{else}}
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-home fa-3x text-muted mb-3"></i>
+                    <h4>Chưa có tin đăng nào</h4>
+                    <p class="text-muted">
+                        {{#if filters.status}}
+                            Không có tin đăng nào với trạng thái này.
+                        {{else}}
+                            Bạn chưa đăng tin nào. Hãy bắt đầu đăng tin đầu tiên!
+                        {{/if}}
+                    </p>
+                    <div class="mt-3">
+                        <a href="/posts/create" class="btn btn-success btn-lg">
+                            <i class="fas fa-plus me-2"></i>
+                            Đăng tin mới
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/if}}
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Xác nhận xóa
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa tin đăng này không?</p>
+                <p class="fw-bold" id="deletePostTitle"></p>
+                <p class="text-muted">Hành động này không thể hoàn tác.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>
+                        Xóa tin đăng
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Delete post confirmation
+    function deletePost(postId, title) {
+        document.getElementById('deletePostTitle').textContent = title;
+        document.getElementById('deleteForm').action = `/posts/${postId}`;
+        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    }
+</script>

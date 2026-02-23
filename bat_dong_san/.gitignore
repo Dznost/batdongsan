@@ -1,0 +1,14 @@
+# 1. Kiểm tra xem .vs đã bị ẩn đi chưa (tùy chọn)
+git status
+
+# 2. Thêm tất cả các file hợp lệ vào hàng đợi
+git add .
+
+# 3. Đóng gói các file lại thành một bản lưu
+git commit -m "Thêm source code dự án bất động sản"
+
+# 4. Đổi tên nhánh hiện tại thành main 
+git branch -M main
+
+# 5. Đẩy code lên GitHub
+git push -u origin main

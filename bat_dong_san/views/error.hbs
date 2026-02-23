@@ -1,0 +1,152 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="text-center">
+        
+        <div class="mb-4">
+          {{#if (eq statusCode 404)}}
+            <i class="fas fa-search fa-5x text-primary"></i>
+          {{else if (eq statusCode 403)}}
+            <i class="fas fa-ban fa-5x text-warning"></i>
+          {{else if (eq statusCode 500)}}
+            <i class="fas fa-exclamation-triangle fa-5x text-danger"></i>
+          {{else}}
+            <i class="fas fa-exclamation-circle fa-5x text-secondary"></i>
+          {{/if}}
+        </div>
+
+        <h1 class="display-1 fw-bold text-primary">{{statusCode}}</h1>
+
+        <h2 class="mb-3">
+          {{#if (eq statusCode 404)}}
+            Không tìm thấy trang
+          {{else if (eq statusCode 403)}}
+            Không có quyền truy cập
+          {{else if (eq statusCode 500)}}
+            Lỗi máy chủ
+          {{else}}
+            Có lỗi xảy ra
+          {{/if}}
+        </h2>
+
+        <p class="lead text-muted mb-4">{{message}}</p>
+
+        <div
+          class="d-flex flex-column flex-sm-row gap-3 justify-content-center"
+        >
+          <a href="/" class="btn btn-primary">
+            <i class="fas fa-home me-2"></i>
+            Về trang chủ
+          </a>
+
+          <button onclick="history.back()" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>
+            Quay lại
+          </button>
+
+          {{#if (eq statusCode 404)}}
+            <a href="/posts" class="btn btn-outline-primary">
+              <i class="fas fa-list me-2"></i>
+              Xem danh sách
+            </a>
+          {{/if}}
+        </div>
+
+        <div class="mt-5">
+          <h5>Cần trợ giúp?</h5>
+          <p class="text-muted">
+            Nếu bạn gặp vấn đề, vui lòng liên hệ với chúng tôi qua:
+          </p>
+          <div class="d-flex justify-content-center gap-3">
+            <a
+              href="mailto:support@batdongsan.com"
+              class="text-decoration-none"
+            >
+              <i class="fas fa-envelope me-1"></i>
+              Email
+            </a>
+            <a href="tel:0123456789" class="text-decoration-none">
+              <i class="fas fa-phone me-1"></i>
+              Hotline
+            </a>
+          </div>
+        </div>
+
+        {{#if stack}}
+          
+          <div class="mt-5">
+            <details class="text-start">
+              <summary class="btn btn-outline-danger btn-sm">
+                <i class="fas fa-bug me-1"></i>
+                Chi tiết lỗi (Development)
+              </summary>
+              <pre
+                class="mt-3 p-3 bg-light border rounded text-danger small"
+              >{{stack}}</pre>
+            </details>
+          </div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{#if (eq statusCode 404)}}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-12">
+        <h4 class="text-center mb-4">Có thể bạn quan tâm</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <i class="fas fa-home fa-2x text-primary mb-3"></i>
+            <h6 class="card-title">Trang chủ</h6>
+            <p class="card-text small">Xem tin đăng mới nhất</p>
+            <a href="/" class="btn btn-sm btn-outline-primary">Xem ngay</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <i class="fas fa-list fa-2x text-success mb-3"></i>
+            <h6 class="card-title">Danh sách BĐS</h6>
+            <p class="card-text small">Xem tất cả bất động sản</p>
+            <a href="/posts" class="btn btn-sm btn-outline-success">Xem danh
+              sách</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <i class="fas fa-plus fa-2x text-warning mb-3"></i>
+            <h6 class="card-title">Đăng tin</h6>
+            <p class="card-text small">Đăng tin bán/cho thuê</p>
+            {{#if user}}
+              <a
+                href="/posts/create"
+                class="btn btn-sm btn-outline-warning"
+              >Đăng tin</a>
+            {{else}}
+              <a href="/login" class="btn btn-sm btn-outline-warning">Đăng nhập</a>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <i class="fas fa-info-circle fa-2x text-info mb-3"></i>
+            <h6 class="card-title">Liên hệ</h6>
+            <p class="card-text small">Hỗ trợ khách hàng</p>
+            <a href="/contact" class="btn btn-sm btn-outline-info">Liên hệ</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/if}}

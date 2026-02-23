@@ -1,0 +1,219 @@
+
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">Tổng người dùng</div>
+                        <div class="h5 mb-0 font-weight-bold">{{stats.totalUsers}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card-success">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">Tổng tin đăng</div>
+                        <div class="h5 mb-0 font-weight-bold">{{stats.totalPosts}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-newspaper fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card-warning">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">Chờ duyệt</div>
+                        <div class="h5 mb-0 font-weight-bold">{{stats.pendingPosts}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clock fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stat-card-info">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">Đã duyệt</div>
+                        <div class="h5 mb-0 font-weight-bold">{{stats.approvedPosts}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Thống kê tin đăng</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="postsChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Thống kê người dùng</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="usersChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Tin đăng gần đây</h6>
+            </div>
+            <div class="card-body">
+                {{#if recentPosts}}
+                    <div class="list-group list-group-flush">
+                        {{#each recentPosts}}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{title}}</h6>
+                                <p class="mb-1 text-muted">{{userId.name}}</p>
+                                <small class="text-muted">{{formatDate createdAt}}</small>
+                            </div>
+                            <div>
+                                {{#if isApproved}}
+                                    <span class="badge bg-success">Đã duyệt</span>
+                                {{else if (eq isApproved false)}}
+                                    <span class="badge bg-danger">Từ chối</span>
+                                {{else}}
+                                    <span class="badge bg-warning">Chờ duyệt</span>
+                                {{/if}}
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="/admin/posts" class="btn btn-primary btn-sm">Xem tất cả</a>
+                    </div>
+                {{else}}
+                    <p class="text-muted text-center">Chưa có tin đăng nào</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Người dùng mới</h6>
+            </div>
+            <div class="card-body">
+                {{#if recentUsers}}
+                    <div class="list-group list-group-flush">
+                        {{#each recentUsers}}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{name}}</h6>
+                                <p class="mb-1 text-muted">{{email}}</p>
+                                <small class="text-muted">{{formatDate createdAt}}</small>
+                            </div>
+                            <div>
+                                {{#if isActive}}
+                                    <span class="badge bg-success">Hoạt động</span>
+                                {{else}}
+                                    <span class="badge bg-secondary">Không hoạt động</span>
+                                {{/if}}
+                                {{#if (eq role 'admin')}}
+                                    <span class="badge bg-primary">Admin</span>
+                                {{/if}}
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="/admin/users" class="btn btn-primary btn-sm">Xem tất cả</a>
+                    </div>
+                {{else}}
+                    <p class="text-muted text-center">Chưa có người dùng nào</p>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Posts Chart
+const postsCtx = document.getElementById('postsChart').getContext('2d');
+new Chart(postsCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Đã duyệt', 'Chờ duyệt', 'Từ chối'],
+        datasets: [{
+            data: [{{stats.approvedPosts}}, {{stats.pendingPosts}}, {{stats.rejectedPosts}}],
+            backgroundColor: [
+                '#28a745',
+                '#ffc107',
+                '#dc3545'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Users Chart
+const usersCtx = document.getElementById('usersChart').getContext('2d');
+new Chart(usersCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Hoạt động', 'Không hoạt động'],
+        datasets: [{
+            data: [{{stats.activeUsers}}, {{stats.inactiveUsers}}],
+            backgroundColor: [
+                '#007bff',
+                '#6c757d'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+</script>

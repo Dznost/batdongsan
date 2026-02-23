@@ -1,0 +1,271 @@
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Hồ sơ cá nhân</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    
+                    <div class="mb-3">
+                        {{#if user.avatar}}
+                            <img src="{{user.avatar}}" alt="Avatar" class="rounded-circle" width="100" height="100">
+                        {{else}}
+                            <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                                <i class="fas fa-user fa-3x text-white"></i>
+                            </div>
+                        {{/if}}
+                    </div>
+
+                    <h5 class="card-title">{{user.name}}</h5>
+                    <p class="card-text text-muted">{{user.email}}</p>
+
+                    {{#if (eq user.role 'admin')}}
+                        <span class="badge bg-danger">
+                            <i class="fas fa-crown me-1"></i>
+                            Quản trị viên
+                        </span>
+                    {{else}}
+                        <span class="badge bg-primary">
+                            <i class="fas fa-user me-1"></i>
+                            Thành viên
+                        </span>
+                    {{/if}}
+
+                    <div class="row mt-3">
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h6 class="mb-0">{{user.postsCount}}</h6>
+                                <small class="text-muted">Tin đăng</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <h6 class="mb-0">{{formatDate user.createdAt}}</h6>
+                                <small class="text-muted">Tham gia</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>
+                        Thao tác nhanh
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/posts/create" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-2"></i>
+                            Đăng tin mới
+                        </a>
+                        <a href="/my-posts" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-list me-2"></i>
+                            Quản lý tin đăng
+                        </a>
+                        {{#if (eq user.role 'admin')}}
+                        <a href="/admin" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-cog me-2"></i>
+                            Quản trị hệ thống
+                        </a>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        Cập nhật thông tin
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form action="/profile" method="POST" class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Họ và tên</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="name" 
+                                    name="name" 
+                                    value="{{user.name}}"
+                                    required
+                                    minlength="2"
+                                    maxlength="50"
+                                >
+                                <div class="invalid-feedback">
+                                    Họ tên phải có từ 2-50 ký tự.
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input 
+                                    type="email" 
+                                    class="form-control" 
+                                    id="email" 
+                                    value="{{user.email}}"
+                                    disabled
+                                >
+                                <div class="form-text">Email không thể thay đổi</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Số điện thoại</label>
+                                <input 
+                                    type="tel" 
+                                    class="form-control" 
+                                    id="phone" 
+                                    name="phone" 
+                                    value="{{user.phone}}"
+                                    pattern="^[0-9]{10,11}$"
+                                >
+                                <div class="invalid-feedback">
+                                    Số điện thoại phải có 10-11 chữ số.
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="role" class="form-label">Vai trò</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="role" 
+                                    value="{{#if (eq user.role 'admin')}}Quản trị viên{{else}}Thành viên{{/if}}"
+                                    disabled
+                                >
+                            </div>
+                        </div>
+                        
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                Cập nhật thông tin
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-key me-2"></i>
+                        Đổi mật khẩu
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form action="/change-password" method="POST" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Mật khẩu hiện tại</label>
+                            <div class="position-relative">
+                                <input 
+                                    type="password" 
+                                    class="form-control" 
+                                    id="currentPassword" 
+                                    name="currentPassword" 
+                                    required
+                                >
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                                <div class="position-relative">
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="newPassword" 
+                                        name="newPassword" 
+                                        required
+                                        minlength="6"
+                                    >
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="confirmNewPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                                <div class="position-relative">
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="confirmNewPassword" 
+                                        name="confirmPassword" 
+                                        required
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-key me-2"></i>
+                                Đổi mật khẩu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Password toggle function
+    function togglePassword(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+    
+    // Password confirmation validation
+    document.getElementById('confirmNewPassword').addEventListener('input', function() {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = this.value;
+        
+        if (newPassword !== confirmPassword) {
+            this.setCustomValidity('Mật khẩu không khớp');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+    
+    document.getElementById('newPassword').addEventListener('input', function() {
+        const confirmPassword = document.getElementById('confirmNewPassword');
+        if (confirmPassword.value) {
+            confirmPassword.dispatchEvent(new Event('input'));
+        }
+    });
+</script>
