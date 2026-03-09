@@ -3,21 +3,21 @@ const mongoose = require('mongoose');
 // Database configuration
 const dbConfig = {
     development: {
+        // Ưu tiên kết nối online qua biến môi trường. Nếu không có, mới dùng localhost dự phòng.
         uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/bat_dong_san',
         options: {
-            // Remove deprecated options
-            // useNewUrlParser and useUnifiedTopology are no longer needed in newer versions
+            serverSelectionTimeoutMS: 10000, // Cập nhật thời gian chờ theo bản online mẫu của bạn
         }
     },
     production: {
+        // Trên môi trường Render, BẮT BUỘC phải lấy link từ biến môi trường
         uri: process.env.MONGODB_URI,
         options: {
-            // Production specific options
-            maxPoolSize: 10, // Maintain up to 10 socket connections
-            serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-            socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-            bufferMaxEntries: 0, // Disable mongoose buffering
-            bufferCommands: false, // Disable mongoose buffering
+            maxPoolSize: 10,
+            serverSelectionTimeoutMS: 10000, // Cập nhật thời gian chờ
+            socketTimeoutMS: 45000,
+            bufferMaxEntries: 0,
+            bufferCommands: false,
         }
     },
     test: {
@@ -26,12 +26,16 @@ const dbConfig = {
     }
 };
 
-
 const env = process.env.NODE_ENV || 'development';
 const currentConfig = dbConfig[env];
 
 const connectDB = async () => {
     try {
+        // Báo lỗi ngay nếu đang ở production (như trên Render) mà quên nhập MONGODB_URI
+        if (!currentConfig.uri) {
+            throw new Error('MONGODB_URI is not defined in the environment variables.');
+        }
+
         const conn = await mongoose.connect(currentConfig.uri, currentConfig.options);
         
         console.log(`✅ MongoDB connected: ${conn.connection.host}`);
@@ -64,7 +68,7 @@ const connectDB = async () => {
         return conn;
         
     } catch (error) {
-        console.error('❌ MongoDB connection failed:', error);
+        console.error('❌ MongoDB connection failed:', error.message);
         process.exit(1);
     }
 };
